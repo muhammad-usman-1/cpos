@@ -1,0 +1,197 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+
+    /*
+     * Shop colour: grey. The app's markup uses "indigo" (and a few "violet"/"purple") classes;
+     * they are all pointed at Tailwind's slate (grey) scale here, one step lighter, so the whole app is grey.
+     * Buttons (600) use a mid grey so their white text stays readable.
+     */
+    --color-indigo-50: var(--color-slate-50);
+    --color-indigo-100: var(--color-slate-100);
+    --color-indigo-200: var(--color-slate-200);
+    --color-indigo-300: var(--color-slate-300);
+    --color-indigo-400: var(--color-slate-400);
+    --color-indigo-500: var(--color-slate-400);
+    --color-indigo-600: var(--color-slate-500);
+    --color-indigo-700: var(--color-slate-600);
+    --color-indigo-800: var(--color-slate-700);
+    --color-indigo-900: var(--color-slate-800);
+    --color-indigo-950: var(--color-slate-900);
+
+    --color-violet-50: var(--color-indigo-50);
+    --color-violet-100: var(--color-indigo-100);
+    --color-violet-200: var(--color-indigo-200);
+    --color-violet-300: var(--color-indigo-300);
+    --color-violet-400: var(--color-indigo-400);
+    --color-violet-500: var(--color-indigo-500);
+    --color-violet-600: var(--color-indigo-600);
+    --color-violet-700: var(--color-indigo-700);
+    --color-violet-800: var(--color-indigo-800);
+    --color-violet-900: var(--color-indigo-900);
+    --color-violet-950: var(--color-indigo-950);
+
+    --color-purple-50: var(--color-indigo-50);
+    --color-purple-100: var(--color-indigo-100);
+    --color-purple-200: var(--color-indigo-200);
+    --color-purple-300: var(--color-indigo-300);
+    --color-purple-400: var(--color-indigo-400);
+    --color-purple-500: var(--color-indigo-500);
+    --color-purple-600: var(--color-indigo-600);
+    --color-purple-700: var(--color-indigo-700);
+    --color-purple-800: var(--color-indigo-800);
+    --color-purple-900: var(--color-indigo-900);
+    --color-purple-950: var(--color-indigo-950);
+}
+
+@layer components {
+    .btn {
+        @apply inline-flex items-center justify-center gap-1.5 rounded-md border border-transparent px-4 py-2 text-sm font-medium transition focus:outline-none focus:ring-2 focus:ring-offset-1 disabled:opacity-50 cursor-pointer;
+    }
+    .btn-primary {
+        @apply bg-indigo-600 font-semibold text-white hover:bg-indigo-700 focus:ring-indigo-500;
+    }
+    .btn-secondary {
+        @apply border-slate-300 bg-white text-slate-700 hover:bg-slate-50 focus:ring-slate-400;
+    }
+    .btn-danger {
+        @apply bg-rose-600 text-white hover:bg-rose-700 focus:ring-rose-500;
+    }
+    .btn-sm {
+        @apply px-2.5 py-1 text-xs;
+    }
+    .input {
+        @apply block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:bg-slate-100;
+    }
+    .label {
+        @apply mb-1 block text-sm font-medium text-slate-700;
+    }
+    .card {
+        @apply rounded-lg border border-slate-200 bg-white shadow-sm;
+    }
+    .card-body {
+        @apply p-5;
+    }
+    .table {
+        @apply min-w-full divide-y divide-slate-200 text-sm;
+    }
+    .table th {
+        @apply bg-slate-50 px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-slate-500;
+    }
+    .table td {
+        @apply px-3 py-2 align-top text-slate-700;
+    }
+    .table tbody tr {
+        @apply border-t border-slate-100;
+    }
+    .badge {
+        @apply inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium;
+    }
+    .badge-green {
+        @apply bg-emerald-100 text-emerald-800;
+    }
+    .badge-red {
+        @apply bg-rose-100 text-rose-800;
+    }
+    .badge-amber {
+        @apply bg-amber-100 text-amber-800;
+    }
+    .badge-gray {
+        @apply bg-slate-100 text-slate-700;
+    }
+    .error {
+        @apply mt-1 text-xs text-rose-600;
+    }
+    /* Big touch tiles, used by the menu and the counter screen. */
+    .pos-tile {
+        @apply flex min-h-24 flex-col items-center justify-center gap-1.5 rounded-xl border border-indigo-200 bg-white px-2 py-3 text-center text-sm leading-tight font-semibold text-indigo-700 shadow-sm transition select-none hover:bg-indigo-50 hover:border-indigo-300 focus-visible:ring-2 focus-visible:ring-indigo-300 focus-visible:outline-none active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50;
+    }
+    /* The page you are on: filled blue. */
+    .pos-tile-active {
+        @apply border-indigo-600 bg-indigo-600 text-white hover:bg-indigo-700;
+    }
+    .pos-tile-green {
+        @apply border-emerald-600 bg-emerald-600 text-white hover:border-emerald-700 hover:bg-emerald-700;
+    }
+    .pos-tile-amber {
+        @apply border-amber-500 bg-amber-500 text-white hover:border-amber-600 hover:bg-amber-600;
+    }
+    .pos-tile-rose {
+        @apply border-rose-600 bg-rose-600 text-white hover:border-rose-700 hover:bg-rose-700;
+    }
+    .pos-key {
+        @apply rounded bg-white/20 px-1.5 text-[10px] font-semibold tracking-wide;
+    }
+    .pos-modal {
+        @apply fixed inset-0 z-50 hidden items-start justify-center overflow-y-auto bg-slate-900/50 p-4 pt-[8vh];
+    }
+    .pos-modal.is-open {
+        @apply flex;
+    }
+}
+
+/* Thin purple scrollbars everywhere, to match the header. */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-indigo-600) var(--color-indigo-50);
+}
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: var(--color-indigo-50);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--color-indigo-600);
+    border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-indigo-700);
+}
+::-webkit-scrollbar-button {
+    display: none;
+}
+
+/* List rows that open their record when clicked. */
+tr[data-href] {
+    cursor: pointer;
+    transition: background-color 0.1s;
+}
+tr[data-href]:hover > td {
+    background-color: var(--color-indigo-50);
+}
+
+/* Line numbers on the counter bill. */
+.sale-lines {
+    counter-reset: line;
+}
+.sale-lines > tr {
+    counter-increment: line;
+}
+.sale-lines .line-no::before {
+    content: counter(line);
+}
+
+/* Urdu: a font with proper Urdu letter shapes, a little more line height for the taller script. */
+html[lang='ur'] body {
+    font-family: 'Noto Naskh Arabic', Tahoma, 'Segoe UI', ui-sans-serif, system-ui, sans-serif;
+    line-height: 1.75;
+}
+html[lang='ur'] .input,
+html[lang='ur'] .btn {
+    font-family: inherit;
+}
+
+@media print {
+    .no-print {
+        display: none !important;
+    }
+}
