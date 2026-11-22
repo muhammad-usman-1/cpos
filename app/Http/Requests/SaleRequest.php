@@ -38,6 +38,7 @@ class SaleRequest extends FormRequest
             'new_customer_name' => ['nullable', 'string', 'max:150'],
             'notes' => ['nullable', 'string', 'max:255'],
             'bill_discount' => ['nullable', 'numeric', 'min:0'],
+            'bill_discount_percent' => ['nullable', 'numeric', 'min:0', 'max:100'],
             'extra_charges' => ['nullable', 'numeric', 'min:0'],
             'cash_received' => ['nullable', 'numeric', 'min:0', 'max:99999999'],
             // Bills made while the internet was down: their browser ID and when they were really made.
@@ -49,6 +50,7 @@ class SaleRequest extends FormRequest
             'items.*.quantity' => ['required', 'numeric', 'gt:0', 'max:99999'],
             'items.*.price' => ['required', 'numeric', 'min:0', 'max:9999999'],
             'items.*.discount' => ['nullable', 'numeric', 'min:0'],
+            'items.*.discount_percent' => ['nullable', 'numeric', 'min:0', 'max:100'],
             'payments' => ['nullable', 'array'],
             'payments.*.method' => ['required_with:payments.*.amount', Rule::enum(PaymentMethod::class)],
             'payments.*.amount' => ['nullable', 'numeric', 'min:0'],
@@ -129,6 +131,8 @@ class SaleRequest extends FormRequest
             'items.*.quantity' => __('validation.attributes.quantity'),
             'items.*.price' => __('validation.attributes.price'),
             'items.*.discount' => __('validation.attributes.discount'),
+            'items.*.discount_percent' => __('validation.attributes.discount'),
+            'bill_discount_percent' => __('Bill discount'),
             'payments.*.method' => __('validation.attributes.payment method'),
             'payments.*.amount' => __('validation.attributes.payment amount'),
         ];

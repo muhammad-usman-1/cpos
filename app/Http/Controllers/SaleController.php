@@ -88,7 +88,7 @@ class SaleController extends Controller
                 'stock' => (float) $variant->stock_qty,
                 'quantity' => (float) ($line['quantity'] ?? 1),
                 'price' => (float) ($line['price'] ?? $variant->product->sale_price),
-                'discount' => (float) ($line['discount'] ?? 0),
+                'discount_percent' => $this->discountPercent($line),
                 'min_price' => (float) $variant->product->min_sale_price,
             ];
         })->values()->all();
@@ -98,6 +98,9 @@ class SaleController extends Controller
 
         $response = response()->view('sales.create', [
             'held' => $held,
+            'heldBillDiscountPercent' => $held && (float) $held->bill_discount > 0 && (float) $held->subtotal - (float) $held->item_discount > 0
+                ? round((float) $held->bill_discount / ((float) $held->subtotal - (float) $held->item_discount) * 100, 2)
+                : '',
             'items' => $items,
             'customer' => $customer,
             'methods' => PaymentMethod::cases(),
@@ -309,5 +312,21 @@ class SaleController extends Controller
     private function shareUrl(Sale $sale): string
     {
         return URL::temporarySignedRoute('receipts.shared', now()->addDays(30), ['sale' => $sale->id]);
+    }
+
+    /**
+     * The discount on a bill line as a percentage, from a submitted percent or a saved rupee amount.
+     *
+     * @param  array<string, mixed>  $line
+     */
+    private function discountPercent(array $line): float|string
+    {
+        if (isset($line['discount_percent'])) {
+            return $line['discount_percent'];
+        }
+
+        $lineAmount = (float) ($line['quantity'] ?? 0) * (float) ($line['price'] ?? 0);
+
+        return $lineAmount > 0 && (float) ($line['discount'] ?? 0) > 0 ? round((float) $line['discount'] / $lineAmount * 100, 2) : '';
     }
 }

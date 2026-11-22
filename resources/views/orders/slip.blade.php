@@ -9,6 +9,9 @@
             <div class="text-lg font-bold">{{ $shopName }}</div>
             <x-shop-contact class="text-xs" />
             <div class="text-xs uppercase tracking-wide">{{ __('Stitching order · Customer copy') }}</div>
+            @if ($copyNumber > 1)
+                <div class="mt-1 text-xs font-bold uppercase">{{ __('Duplicate copy :number', ['number' => $copyNumber]) }}</div>
+            @endif
         </div>
         <div class="my-3 text-center">
             @barcodes<div class="mx-auto h-12 w-56">{!! \App\Support\Code128::svg($order->number, 40) !!}</div>@endbarcodes
@@ -33,9 +36,11 @@
             <tr class="text-base font-bold"><td>{{ __('Balance') }}</td><td class="text-end">{{ number_format($order->balanceDue(), 0) }}</td></tr>
         </table>
         <div class="my-2 border-t border-dashed border-slate-500"></div>
+        <p class="mb-2 text-center text-sm font-bold">{{ __('Please bring this slip to collect your suit.') }}</p>
         <x-bill-terms setting="order_slip_terms" :title="__('Terms & conditions')" class="text-xs" />
         @if ($footer = \App\Models\Setting::get('receipt_footer'))
             <p class="mt-2 text-center text-xs">{{ $footer }}</p>
         @endif
+        <p class="mt-2 text-center text-[10px] text-slate-500">{{ __('Printed :time', ['time' => now()->translatedFormat('d M Y h:i A')]) }}</p>
     </div>
 </x-print-layout>

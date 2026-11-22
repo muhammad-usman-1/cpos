@@ -7,6 +7,7 @@ use App\Enums\OrderStatus;
 use App\Enums\OrderType;
 use App\Enums\PaymentMethod;
 use App\Http\Requests\StitchingOrderRequest;
+use App\Models\AuditLog;
 use App\Models\Customer;
 use App\Models\Measurement;
 use App\Models\Setting;
@@ -113,7 +114,7 @@ class StitchingOrderController extends Controller
 
         $order->load([
             'customer', 'profile', 'measurement.values.field', 'sale', 'parent', 'alterations', 'extras',
-            'statusLogs.user', 'assignments.tailor', 'payments.user', 'tailor', 'creator',
+            'statusLogs.user', 'assignments.tailor', 'payments.user', 'tailor', 'creator', 'slipPrints.user',
         ]);
 
         return view('orders.show', [
@@ -216,7 +217,28 @@ class StitchingOrderController extends Controller
         $this->authorizeView($request, $order);
         $order->load('customer', 'profile', 'extras');
 
-        return view('orders.slip', ['order' => $order, 'shopName' => Setting::get('shop_name'), 'currency' => Setting::get('currency')]);
+        return view('orders.slip', [
+            'order' => $order,
+            'copyNumber' => $this->recordSlipPrint($order, 'customer'),
+            'shopName' => Setting::get('shop_name'),
+            'currency' => Setting::get('currency'),
+        ]);
+    }
+
+    /**
+     * Small tag tied to the suit: customer, delivery date and the measurements, without any money.
+     */
+    public function suitTag(Request $request, StitchingOrder $order): View
+    {
+        $this->authorizeView($request, $order);
+        $order->load('customer', 'profile', 'measurement.values.field', 'tailor');
+
+        return view('orders.suit-tag', [
+            'order' => $order,
+            'measurement' => $order->measurement,
+            'copyNumber' => $this->recordSlipPrint($order, 'suit_tag'),
+            'shopName' => Setting::get('shop_name'),
+        ]);
     }
 
     /**
@@ -226,12 +248,25 @@ class StitchingOrderController extends Controller
     {
         $this->authorizeView($request, $order);
         $order->load('customer', 'profile', 'measurement.values.field', 'tailor');
+        $this->recordSlipPrint($order, 'tailor');
 
         return view('measurements.slip', [
             'measurement' => $order->measurement,
             'order' => $order,
             'shopName' => Setting::get('shop_name'),
         ]);
+    }
+
+    /**
+     * Keeps a record of the slip being printed and returns which copy this is (1 for the first print).
+     */
+    private function recordSlipPrint(StitchingOrder $order, string $slip): int
+    {
+        $copyNumber = $order->slipPrints()->where('new_values->slip', $slip)->count() + 1;
+
+        AuditLog::record('slip_printed', $order, null, ['slip' => $slip, 'copy' => $copyNumber], ucfirst(str_replace('_', ' ', $slip)).' slip printed');
+
+        return $copyNumber;
     }
 
     /**

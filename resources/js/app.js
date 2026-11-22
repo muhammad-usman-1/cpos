@@ -1252,7 +1252,8 @@ function initSaleForm() {
         rows.querySelectorAll('[data-row]').forEach((row) => {
             const qty = parseFloat(row.querySelector('[data-field="quantity"]').value) || 0;
             const price = parseFloat(row.querySelector('[data-field="price"]').value) || 0;
-            const discount = parseFloat(row.querySelector('[data-field="discount"]').value) || 0;
+            const percent = Math.min(parseFloat(row.querySelector('[data-field="discount_percent"]').value) || 0, 100);
+            const discount = Math.round(qty * price * percent) / 100;
             const amount = Math.round((qty * price - discount) * 100) / 100;
             const minPrice = parseFloat(row.dataset.minPrice || 0);
 
@@ -1262,14 +1263,13 @@ function initSaleForm() {
             itemDiscount += discount;
         });
 
-        const billDiscount = parseFloat(form.querySelector('[name="bill_discount"]').value) || 0;
-        const extra = parseFloat(form.querySelector('[name="extra_charges"]').value) || 0;
-
-        return { subtotal, itemDiscount, total: Math.round((subtotal - itemDiscount - billDiscount + extra) * 100) / 100 };
+        const billPercent = Math.min(parseFloat(form.querySelector('[name="bill_discount_percent"]').value) || 0, 100);
+        const billDiscount = Math.round((subtotal - itemDiscount) * billPercent) / 100;
+        return { subtotal, itemDiscount, billDiscount, total: Math.round((subtotal - itemDiscount - billDiscount) * 100) / 100 };
     };
 
     const recalc = () => {
-        const { subtotal, itemDiscount, total } = totals();
+        const { subtotal, itemDiscount, billDiscount, total } = totals();
 
         if (!paymentTouched) {
             const first = payRows.querySelector('[data-row] [data-field="amount"]');
@@ -1295,10 +1295,8 @@ function initSaleForm() {
             lineCount++;
             quantity += parseFloat(row.querySelector('[data-field="quantity"]').value) || 0;
         });
-        const amountOf = (name) => money(parseFloat(form.querySelector(`[name="${name}"]`).value) || 0);
         form.querySelectorAll('[data-item-count]').forEach((element) => (element.textContent = `${lineCount} / ${Math.round(quantity * 1000) / 1000}`));
-        form.querySelectorAll('[data-bill-discount-view]').forEach((element) => (element.textContent = amountOf('bill_discount')));
-        form.querySelectorAll('[data-extra-view]').forEach((element) => (element.textContent = amountOf('extra_charges')));
+        form.querySelectorAll('[data-bill-discount-view]').forEach((element) => (element.textContent = money(billDiscount)));
         // Paid / credit boxes are optional on the screen.
         const paidBox = form.querySelector('[data-paid]');
         const creditBox = form.querySelector('[data-credit]');
@@ -1557,7 +1555,7 @@ function initSaleForm() {
         });
         row.querySelector('[data-field="quantity"]').value = item.quantity;
         row.querySelector('[data-field="price"]').value = item.price;
-        row.querySelector('[data-field="discount"]').value = item.discount;
+        row.querySelector('[data-field="discount_percent"]').value = item.discount_percent || '';
     });
 
     if (form.dataset.customer) {

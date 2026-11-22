@@ -40,7 +40,7 @@
     "src": "_noto-naskh-arabic-variable-normal-DIN-4rtF.woff2"
   },
   "resources/css/app.css": {
-    "file": "assets/app-DyBP6bIw.css",
+    "file": "assets/app-B_wW2kIz.css",
     "name": "app",
     "names": [
       "app.css"
@@ -49,7 +49,7 @@
     "isEntry": true
   },
   "resources/js/app.js": {
-    "file": "assets/app-IgOoyjse.js",
+    "file": "assets/app-DXGIEs3i.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true

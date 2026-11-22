@@ -1386,5 +1386,18 @@
     "Managers log in with their own username and password. They can only use the parts of the shop listed below.": "مینیجر اپنے یوزر نیم اور پاس ورڈ سے لاگ اِن کرتے ہیں۔ وہ صرف نیچے دیے گئے حصے استعمال کر سکتے ہیں۔",
     "Managers cannot buy stock, see suppliers or cost prices, add staff or change settings.": "مینیجر اسٹاک نہیں خرید سکتے، سپلائرز یا لاگت کی قیمت نہیں دیکھ سکتے، عملہ شامل یا سیٹنگز تبدیل نہیں کر سکتے۔",
     "Manager :name added. They can log in now.": "مینیجر :name شامل ہو گیا۔ اب وہ لاگ اِن کر سکتے ہیں۔",
-    "Manager :name saved.": "مینیجر :name محفوظ ہو گیا۔"
+    "Manager :name saved.": "مینیجر :name محفوظ ہو گیا۔",
+    "Discount %": "رعایت %",
+    "Bill discount %": "بل رعایت %",
+    "Suit tag": "سوٹ ٹیگ",
+    "Copy :number": "کاپی :number",
+    "Duplicate copy :number": "ڈپلیکیٹ کاپی :number",
+    "Please bring this slip to collect your suit.": "سوٹ لینے کے لیے یہ پرچی ساتھ لائیں۔",
+    "Printed :time": "پرنٹ :time",
+    "Print both slips: one for the customer and one to tie to the suit.": "دونوں پرچیاں پرنٹ کریں: ایک گاہک کے لیے اور ایک سوٹ کے ساتھ باندھنے کے لیے۔",
+    "Slips printed": "پرنٹ شدہ پرچیاں",
+    "No slip printed yet.": "ابھی کوئی پرچی پرنٹ نہیں ہوئی۔",
+    "Slip": "پرچی",
+    "Copy": "کاپی",
+    "First print": "پہلا پرنٹ"
 }

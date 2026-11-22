@@ -249,6 +249,7 @@ Route::middleware('auth')->group(function () {
         Route::get('orders/{order}', [StitchingOrderController::class, 'show'])->name('orders.show');
         Route::get('orders/{order}/slip', [StitchingOrderController::class, 'slip'])->name('orders.slip');
         Route::get('orders/{order}/measurement-slip', [StitchingOrderController::class, 'measurementSlip'])->name('orders.measurement-slip');
+        Route::get('orders/{order}/suit-tag', [StitchingOrderController::class, 'suitTag'])->name('orders.suit-tag');
     });
 
     // 3.9 Payments and ledger

@@ -6,6 +6,7 @@
 <x-layouts.app :title="'Order '.$order->number">
     <x-slot:actions>
         <a href="{{ route('orders.slip', $order) }}" target="_blank" class="btn btn-secondary">{{ __('Customer slip') }}</a>
+        <a href="{{ route('orders.suit-tag', $order) }}" target="_blank" class="btn btn-secondary">{{ __('Suit tag') }}</a>
         <a href="{{ route('orders.measurement-slip', $order) }}" target="_blank" class="btn btn-secondary">{{ __('Tailor slip') }}</a>
         @if ($readyMessage && \App\Models\Setting::usesMessaging())
             <a href="{{ $readyMessage }}" target="_blank" rel="noopener" class="btn btn-primary">{{ __('Send "ready" on WhatsApp') }}</a>
@@ -21,6 +22,11 @@
 
     @if (session('print_slip'))
         <script>window.addEventListener('load', () => window.open(@json(route('orders.slip', $order)), '_blank'));</script>
+        <div class="mb-4 flex flex-wrap items-center gap-3 rounded-md border border-indigo-200 bg-indigo-50 px-4 py-3 text-sm text-indigo-900">
+            <span>{{ __('Print both slips: one for the customer and one to tie to the suit.') }}</span>
+            <a href="{{ route('orders.slip', $order) }}" target="_blank" class="btn btn-sm btn-secondary">{{ __('Customer slip') }}</a>
+            <a href="{{ route('orders.suit-tag', $order) }}" target="_blank" class="btn btn-sm btn-primary">{{ __('Suit tag') }}</a>
+        </div>
     @endif
     @if (session('notify_ready') && $readyMessage && \App\Models\Setting::usesMessaging())
         <div class="mb-4 rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
@@ -86,6 +92,27 @@
                     @if ($order->measurement->notes)<p class="mt-2 text-sm">{{ $order->measurement->notes }}</p>@endif
                 @else
                     <p class="text-sm text-slate-500">{{ __('No measurement attached.') }}</p>
+                @endif
+            </div>
+
+            <div class="card overflow-x-auto">
+                <div class="border-b border-slate-200 px-5 py-3"><h2 class="font-semibold">{{ __('Slips printed') }} ({{ $order->slipPrints->count() }})</h2></div>
+                @if ($order->slipPrints->isEmpty())
+                    <p class="px-5 py-4 text-sm text-slate-500">{{ __('No slip printed yet.') }}</p>
+                @else
+                    <table class="table">
+                        <thead><tr><th>{{ __('Time') }}</th><th>{{ __('Slip') }}</th><th>{{ __('Copy') }}</th><th>{{ __('By') }}</th></tr></thead>
+                        <tbody>
+                        @foreach ($order->slipPrints as $print)
+                            <tr>
+                                <td class="whitespace-nowrap text-xs">{{ $print->created_at->translatedFormat('d M Y h:i A') }}</td>
+                                <td>{{ ['customer' => __('Customer slip'), 'suit_tag' => __('Suit tag'), 'tailor' => __('Tailor slip')][$print->new_values['slip'] ?? ''] ?? '—' }}</td>
+                                <td>{{ ($print->new_values['copy'] ?? 1) > 1 ? __('Duplicate copy :number', ['number' => $print->new_values['copy']]) : __('First print') }}</td>
+                                <td class="text-xs text-slate-500">{{ $print->user?->name }}</td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
                 @endif
             </div>
 

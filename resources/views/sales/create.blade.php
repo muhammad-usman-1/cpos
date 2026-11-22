@@ -63,7 +63,7 @@
                                 <th>{{ __('Item') }}</th>
                                 <th class="w-28 text-end">{{ __('Qty') }}</th>
                                 <th class="w-32 text-end">{{ __('Price') }}</th>
-                                <th class="w-28 text-end">{{ __('Discount') }}</th>
+                                <th class="w-28 text-end">{{ __('Discount %') }}</th>
                                 <th class="w-32 text-end">{{ __('Amount') }}</th>
                                 <th class="w-10"></th>
                             </tr>
@@ -86,18 +86,17 @@
                             </td>
                             <td><input type="number" name="items[__INDEX__][quantity]" min="1" step="1" required class="input text-end" data-field="quantity"></td>
                             <td><input type="number" name="items[__INDEX__][price]" min="0" step="0.01" required class="input text-end" data-field="price"></td>
-                            <td><input type="number" name="items[__INDEX__][discount]" min="0" step="0.01" class="input text-end" data-field="discount"></td>
+                            <td><input type="number" name="items[__INDEX__][discount_percent]" min="0" max="100" step="0.01" class="input text-end" placeholder="%" data-field="discount_percent"></td>
                             <td class="text-end font-semibold tabular-nums" data-amount>0.00</td>
                             <td><button type="button" class="rounded p-1 text-rose-600 hover:bg-rose-50" data-remove-row title="{{ __('Remove') }}"><x-icon name="x-mark" class="h-5 w-5" /></button></td>
                         </tr>
                     </template>
                 </div>
 
-                <div class="grid grid-cols-2 gap-px border-t border-slate-200 bg-slate-200 text-sm md:grid-cols-4">
+                <div class="grid grid-cols-1 gap-px border-t border-slate-200 bg-slate-200 text-sm sm:grid-cols-3">
                     <div class="flex justify-between gap-2 bg-indigo-50 px-4 py-2.5"><span class="text-slate-500">{{ __('Items total') }}</span><span class="font-semibold tabular-nums" data-subtotal>0.00</span></div>
                     <div class="flex justify-between gap-2 bg-indigo-50 px-4 py-2.5"><span class="text-slate-500">{{ __('Item discounts') }}</span><span class="font-semibold tabular-nums">− <span data-item-discount>0.00</span></span></div>
                     <div class="flex justify-between gap-2 bg-indigo-50 px-4 py-2.5"><span class="text-slate-500">{{ __('Bill discount') }}</span><span class="font-semibold tabular-nums">− <span data-bill-discount-view>0.00</span></span></div>
-                    <div class="flex justify-between gap-2 bg-indigo-50 px-4 py-2.5"><span class="text-slate-500">{{ __('Extra charges') }}</span><span class="font-semibold tabular-nums">+ <span data-extra-view>0.00</span></span></div>
                 </div>
             </section>
 
@@ -136,15 +135,11 @@
                 </div>
 
                 <div class="space-y-3 rounded-xl bg-white p-4 text-sm shadow-sm ring-1 ring-slate-200" data-payment-panel>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label for="bill_discount" class="label">{{ __('Bill discount') }}</label>
-                            <input id="bill_discount" type="number" step="0.01" min="0" name="bill_discount" value="{{ old('bill_discount', $held ? (float) $held->bill_discount : '') }}" class="input text-end">
-                        </div>
-                        <div>
-                            <label for="extra_charges" class="label">{{ __('Extra charges') }}</label>
-                            <input id="extra_charges" type="number" step="0.01" min="0" name="extra_charges" value="{{ old('extra_charges', $held ? (float) $held->extra_charges : '') }}" class="input text-end">
-                        </div>
+                    <div>
+                            <label for="bill_discount_percent" class="label">{{ __('Bill discount %') }}</label>
+                            <input id="bill_discount_percent" type="number" step="0.01" min="0" max="100" name="bill_discount_percent" value="{{ old('bill_discount_percent', $heldBillDiscountPercent) }}" class="input text-end" placeholder="%">
+                            @error('bill_discount_percent')<p class="error">{{ $message }}</p>@enderror
+                            @error('bill_discount')<p class="error">{{ $message }}</p>@enderror
                     </div>
 
                     <div class="space-y-2">

@@ -247,7 +247,10 @@ class SaleService
     }
 
     /**
-     * @param  array<int|string, array{product_variant_id: int|string, barcode_label_id?: int|string|null, quantity: float|string, price: float|string, discount?: float|string|null}>  $items
+     * Each line's discount is typed as a percentage of the line amount. A plain rupee `discount` is still
+     * accepted for bills saved offline before percentages were used.
+     *
+     * @param  array<int|string, array{product_variant_id: int|string, barcode_label_id?: int|string|null, quantity: float|string, price: float|string, discount?: float|string|null, discount_percent?: float|string|null}>  $items
      * @return Collection<int, array{product_variant_id: int, barcode_label_id: int|null, quantity: float, price: float, discount: float, amount: float, product: Product}>
      */
     private function buildLines(array $items): Collection
@@ -260,7 +263,9 @@ class SaleService
             $labelId = (int) ($line['barcode_label_id'] ?? 0);
             $quantity = round((float) $line['quantity'], 3);
             $price = round((float) $line['price'], 2);
-            $discount = round((float) ($line['discount'] ?? 0), 2);
+            $discount = isset($line['discount_percent']) && $line['discount_percent'] !== ''
+                ? round($quantity * $price * (float) $line['discount_percent'] / 100, 2)
+                : round((float) ($line['discount'] ?? 0), 2);
             $amount = round($quantity * $price - $discount, 2);
 
             if ($amount < 0) {
@@ -309,7 +314,9 @@ class SaleService
     {
         $subtotal = round($lines->sum(fn (array $line) => $line['quantity'] * $line['price']), 2);
         $itemDiscount = round($lines->sum('discount'), 2);
-        $billDiscount = round((float) ($data['bill_discount'] ?? 0), 2);
+        $billDiscount = isset($data['bill_discount_percent']) && $data['bill_discount_percent'] !== ''
+            ? round(($subtotal - $itemDiscount) * (float) $data['bill_discount_percent'] / 100, 2)
+            : round((float) ($data['bill_discount'] ?? 0), 2);
         $extraCharges = round((float) ($data['extra_charges'] ?? 0), 2);
         $total = round($subtotal - $itemDiscount - $billDiscount + $extraCharges, 2);
 

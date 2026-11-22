@@ -126,6 +126,16 @@ class StitchingOrder extends Model
     }
 
     /**
+     * Every customer slip, suit tag and tailor slip printed for this order, newest first.
+     *
+     * @return MorphMany<AuditLog, $this>
+     */
+    public function slipPrints(): MorphMany
+    {
+        return $this->morphMany(AuditLog::class, 'auditable')->where('event', 'slip_printed')->latest('id');
+    }
+
+    /**
      * @return MorphMany<Payment, $this>
      */
     public function payments(): MorphMany
